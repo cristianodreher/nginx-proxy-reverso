@@ -1,33 +1,38 @@
 version: '3'
 
-networks:
-  proxy:
-    driver: bridge
+#networks:
+  #proxy:
+   # driver: bridge
 
 services:
-  nginx:
-    image: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-    networks:
-      - proxy
-
   web-pinkmoon-01:
     image: cristianodreher/web-pinkmoon:latest
-    networks:
-      - proxy
   web-pinkmoon-02:
     image: cristianodreher/web-pinkmoon:latest
-    networks:
-      - proxy
-
+      
   web-pinkmoonjeans-01:
     image: cristianodreher/web-pinkmoonjeans:latest
-    networks:
-      - proxy
   web-pinkmoonjeans-02:
     image: cristianodreher/web-pinkmoonjeans:latest
-    networks:
-      - proxy
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    #networks:
+    #  - proxy
+  
+  
+  certbot:
+    image: certbot/certbot
+     # networks:
+    #- proxy
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email cristiano.moraes@crisdu.com.br -d pinkmoonjeans.com.br -d www.pinkmoonjeans.com.br --agree-tos
