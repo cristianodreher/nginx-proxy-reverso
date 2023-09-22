@@ -1,19 +1,36 @@
 version: '3'
 
-#networks:
-  #proxy:
-   # driver: bridge
+networks:
+  proxy:
+    driver: bridge
 
 services:
   web-pinkmoon-01:
     image: cristianodreher/web-pinkmoon:latest
+    networks:
+      - proxy
   web-pinkmoon-02:
     image: cristianodreher/web-pinkmoon:latest
-      
+    networks:
+      - proxy
+        
   web-pinkmoonjeans-01:
     image: cristianodreher/web-pinkmoonjeans:latest
+    networks:
+      - proxy
   web-pinkmoonjeans-02:
     image: cristianodreher/web-pinkmoonjeans:latest
+    networks:
+      - proxy
+
+  web-nextjeans-01:
+    image: cristianodreher/web-nextjeans:latest
+    networks:
+      - proxy
+  web-nextjeans-02:
+    image: cristianodreher/web-nextjeans:latest
+    networks:
+      - proxy
 
   nginx:
     image: nginx
@@ -24,15 +41,15 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    #networks:
-    #  - proxy
+    networks:
+      - proxy
   
   
   certbot:
     image: certbot/certbot
-     # networks:
-    #- proxy
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email cristiano.moraes@crisdu.com.br -d pinkmoonjeans.com.br -d www.pinkmoonjeans.com.br --agree-tos
+    networks:
+      - proxy
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email cristiano.moraes@crisdu.com.br -d nextjeans.com.br -d www.nextjeans.com.br --agree-tos
